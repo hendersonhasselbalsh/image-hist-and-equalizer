@@ -4,6 +4,7 @@
 
 int main(int argc, const char** argv)
 {
+    string nome[] = {"output\\blue.png","output\\red.png", "output\\green.png"};
 
     Mat im = imread("carro.jpg");
     Mat layer[3];
@@ -12,10 +13,13 @@ int main(int argc, const char** argv)
 
     Histograma histo = Histograma(256);
 
-    histo.creat(layer[0]);
-    imshow("histograma", histo.get_hist());
+
+    for(int i = 0; i < 3; i++)
+    {
+        histo.creat(layer[i], nome[i]);
+        imwrite(nome[i], histo.get_hist() );
+    }
 
 
- waitKey();
  return 0;
 }

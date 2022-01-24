@@ -22,7 +22,7 @@ class Histograma{
         
     public:
         Histograma(unsigned l);
-        void creat(Mat img);
+        void creat(Mat img, const string& img_name);
         Mat equalizer();
         Mat get_hist() { return hist_img; }
 
@@ -33,7 +33,7 @@ Histograma::Histograma(unsigned l)
     this->level = l;    this->hist = Mat::zeros(l, 1, CV_32F);
 }
 
-void Histograma::plot_hist(string nome)
+void Histograma::plot_hist(string file_nome)
 {
     FILE* pipe = _popen("gnuplot", "w");
 
@@ -47,15 +47,15 @@ void Histograma::plot_hist(string nome)
         "set style fill solid 1.0 noborder\n" 
     );
 
-    string output = "set out \'" + nome + "\'\n";
+    string output = "set out \'" + file_nome + "\'\n";
     fprintf(pipe, output.c_str());
     fprintf(pipe, "set xrange[0:%d]\n", this->level-1);
-    fprintf(pipe, "plot \'histograma.txt\' using 1 notitle\n");
+    fprintf(pipe, "plot \'output\\histograma.txt\' using 1 notitle\n");
 
     _pclose(pipe);
 }
 
-void Histograma::creat(Mat img)
+void Histograma::creat(Mat img, const string& img_name)
 {
     //----- conta as intensidade dos pixels
     for(int i = 0; i < img.rows; i++)
@@ -71,7 +71,7 @@ void Histograma::creat(Mat img)
 
 
     //----- cria arquivo txt para armazenar os numeros do histograma
-    ofstream file_hist = ofstream("histograma.txt");
+    ofstream file_hist = ofstream("output\\histograma.txt");
 
     for(unsigned i = 0; i < this->level; i++)
     {
@@ -80,18 +80,11 @@ void Histograma::creat(Mat img)
     
     file_hist.close();
     //----- plotar grafico;
-    this->plot_hist("histograma.png");
+    this->plot_hist(img_name);
 
     //----- carregar a imagem
-    this->hist_img = imread("histograma.png");
-
+    this->hist_img = imread(img_name);
 }
-
-
-
-
-
-
 
 
 
